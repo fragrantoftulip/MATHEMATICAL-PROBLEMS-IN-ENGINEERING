@@ -1,0 +1,56 @@
+res=rand(1,10000)*2;
+hist(res,20);
+[y_bar,x_bar]=hist(res,20);
+
+k=1;
+x=histfit(res,20,'rayleigh');
+x(2).Visible='off';
+x(1).Visible='off';
+ 
+x_line=x(2).XData;
+y_line2=x(2).YData;
+
+y_line=raylpdf(x_bar,k);
+premeter=max(y_bar)/max(y_line);
+y_line=premeter*y_line;
+width=x_bar(2)-x_bar(1);
+
+%判断拟合情况好坏
+flag=judge(x_bar,y_bar,x_bar,y_line);
+%用来记录被删除点的位置及删除的次数
+delete_pos=[];
+cnt=[];
+
+
+
+while(flag<0) 
+[y1,res,delete_pos,cnt]= delete_data( x_bar,y_bar,x_bar ,y_line,res,width,delete_pos,cnt);
+
+x=histfit(res,20,'rayleigh');
+x(2).Visible='off';
+x(1).Visible='off';
+[y_bar,x_bar]=hist(res,20);
+x_line=x(2).XData;
+y_line2=x(2).YData;
+
+y_line=raylpdf(x_bar,k);
+premeter=max(y_bar)/max(y_line);
+y_line=premeter*y_line;
+
+
+%判断拟合情况好坏
+flag=judge(x_bar,y_bar,x_bar,y_line);
+end
+
+
+% bar(x_bar,y1,1)
+% hold on
+x=histfit(res,20,'rayleigh');
+x(2).Visible='off';
+% x(1).Visible='off';
+hold on 
+
+y_line=raylpdf(x_bar,k);
+premeter=max(y_bar)/max(y_line);
+y_line=premeter*y_line;
+plot(x_bar,y_line)
